@@ -1,0 +1,38 @@
+---
+  - name: Verify that variables
+    assert:
+      that: snmp_item_var is defined and snmp_item_var | length>0 and snmp_item_var != None
+      fail_msg: "{{ snmp_item_var }} needs to be set for the role to work"
+      success_msg: "Required variables {{ snmp_item_var }} is defined"
+    loop_control:
+      loop_var: snmp_item_var
+    with_items:
+      - snmp_syslocation
+      - snmp_syscontact
+      - snmp_ro_community
+      - snmp_rw_community
+      - snmp_devel
+
+  - name: Install SNMP package
+    yum:
+      name: net-snmp,net-snmp-utils
+  - name: Rename original config
+    block:
+      - name: Copy snmp.conf file
+        copy:
+          src: /etc/snmp/snmpd.conf
+          dest: /etc/snmp/snmpd.conf.orig
+          remote_src: yes
+      - name: Remove snmp.conf file
+        file:
+          name: /etc/snmp/snmpd.conf
+          state: absent
+  - name: Create snmpd.conf file
+    template:
+      src: snmpd.j2
+      dest: /etc/snmp/snmpd.conf
+  - name: Enable and start snmpd daemon
+    systemd:
+      name: snmpd
+      state: started
+      enabled: true

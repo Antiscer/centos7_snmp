@@ -1,0 +1,2 @@
+---
+  kernel_source_version: "{{ansible_kernel}}"

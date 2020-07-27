@@ -1,0 +1,20 @@
+---
+  - name: Verify that variables
+    assert:
+      that: kernel_item_var is defined and kernel_item_var | length>0 and kernel_item_var != None
+      fail_msg: "{{ kernel_item_var }} needs to be set for the role to work"
+      success_msg: "Required variables {{ kernel_item_var }} is defined"
+    loop_control:
+      loop_var: kernel_item_var
+    with_items:
+      - kernel_source_version
+
+  - name: Add old repo centos packages
+    copy:
+      src: old.repo
+      dest: /etc/yum.repos.d/
+
+  - name: Install kernel-devel 
+    yum:
+      name: "kernel-devel-{{kernel_source_version}}"
+      state: present

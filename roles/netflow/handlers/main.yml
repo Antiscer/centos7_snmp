@@ -1,0 +1,10 @@
+---
+  - name: Iptables save
+    shell: 
+      cmd: /usr/libexec/iptables/iptables.init save
+    become: yes
+  
+  - name: Remove ipt-netflow module
+    modprobe: 
+      name: ipt_NETFLOW
+      state: absent

@@ -1,0 +1,6 @@
+---  
+  snmp_syslocation: "RU,Novosibirsk,Academgorodok"
+  snmp_syscontact: Admin <admin@marvin-it.com>
+  snmp_ro_community: public
+  snmp_rw_community: private
+  snmp_devel: no
