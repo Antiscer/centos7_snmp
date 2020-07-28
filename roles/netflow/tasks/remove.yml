@@ -1,0 +1,30 @@
+---
+  - name: Remove modules
+    block:
+    - name: Clear iptables rules
+      iptables: 
+        chain: "{{netflow_tt_2}}"
+        jump: NETFLOW
+        state: absent
+      loop_control:
+        loop_var: netflow_tt_2
+      with_items:
+        - INPUT
+        - OUTPUT
+        - FORWARD
+      notify:
+        - Iptables save
+    - name: Remove ipt_NETFLOW module
+      modprobe: 
+        name: ipt_NETFLOW
+        state: absent
+
+  - name: Remove conf files
+    file:
+      path: "{{netflow_remove}}"
+      state: absent
+    loop_control:
+      loop_var: netflow_remove
+    loop:
+      - /etc/modprobe.d/netflow.conf
+      - /etc/modules-load.d/ipt_NETFLOW.conf

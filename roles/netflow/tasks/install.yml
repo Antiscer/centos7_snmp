@@ -1,0 +1,152 @@
+---  
+  - name: Verify that variables
+    assert:
+      that: netflow_item_var is defined and netflow_item_var | length>0 and netflow_item_var != None
+      fail_msg: "{{ netflow_item_var }} needs to be set for the role to work"
+      success_msg: "Required variables {{ netflow_item_var }} is defined"
+    loop_control:
+      loop_var: netflow_item_var
+    with_items:
+      - ipt_netflow_dir
+      - netflow_collector_ip
+      - netflow_collector_port
+      - netflow_protocol_version
+      - netflow_natevents_enable
+      - netflow_selinux_state
+      - netflow_with_snmp
+      - netflow_traffic_type
+
+  - name: Disable selinux
+    selinux:
+      state: disabled
+  - name: Disable firewalld
+    systemd:
+      name: firewalld
+      masked: yes
+      state: stopped
+      enabled: false
+  - name: Add SNMP support
+    block:
+    - name: Install snmp-devel packet
+      yum:
+        name: net-snmp-devel
+    - name: Run SNMP role
+      include_role:
+        name: snmp
+    - name: Add SNMP support
+      lineinfile:
+        path: /etc/snmp/snmpd.conf
+        line: dlmod netflow /usr/lib/snmp/dlmod/snmp_NETFLOW.so
+        create: yes
+    - name: Restart snmpd service
+      systemd:
+        name: snmpd
+        state: restarted
+    when: netflow_with_snmp | bool
+
+  - name: Install necessary package
+    yum:
+      name: "{{ packages_for_netflow }}"
+    loop_control:
+      loop_var: packages_for_netflow
+    loop:      
+      - epel-release
+      - dkms
+      - git
+      - iptables-devel
+      - iptables-services
+      - pkgconfig
+      - gcc
+
+  - name: Get ipt_netflow from github
+    git:
+      repo: git://github.com/aabc/ipt-netflow.git
+      dest: "{{ipt_netflow_dir}}"
+  
+  - name: Configure and install ipt-netflow
+    block:
+      - name: Configure ipt-netflow
+        shell: 
+          cmd: ./configure --enable-natevents
+          chdir: "{{ipt_netflow_dir}}"
+      - name: Make ipt-netflow
+        shell: 
+          cmd: make all install
+          chdir: "{{ipt_netflow_dir}}"
+      - name: Depmod ipt-netflow
+        shell: 
+          cmd: depmod
+          chdir: "{{ipt_netflow_dir}}"      
+  
+  - name: Add collector to config
+    template:
+      src: netflow.j2
+      dest: /etc/modprobe.d/netflow.conf
+    register: netflow_conf
+
+  - name: Remove modules
+    block:
+    - name: Clear iptables rules
+      iptables: 
+        chain: "{{netflow_tt_1}}"
+        jump: NETFLOW
+        state: absent
+      loop_control:
+        loop_var: netflow_tt_1
+      with_items:
+        - INPUT
+        - OUTPUT
+        - FORWARD
+    - name: Remove ipt_NETFLOW module
+      modprobe: 
+        name: ipt_NETFLOW
+        state: absent
+    when: netflow_conf is changed
+
+  - name: Load ipt-netflow module
+    modprobe:
+      name: ipt_NETFLOW
+      state: present 
+  
+  - name: Start iptables-service
+    systemd:
+      name: iptables
+      state: started
+      enabled: yes 
+  
+  - name: Refresh rule for iptables
+    block:
+    - name: Clear iptables rules
+      iptables: 
+        chain: "{{netflow_tt_1}}"
+        jump: NETFLOW
+        state: absent
+      loop_control:
+        loop_var: netflow_tt_1
+      with_items:
+        - INPUT
+        - OUTPUT
+        - FORWARD
+    - name: Add rule for iptables
+      iptables:
+        action: insert
+        chain: "{{netflow_tt}}"
+        rule_num: "1"
+        jump: NETFLOW
+      loop_control:
+        loop_var: netflow_tt
+      with_items:
+        - "{{netflow_trafic_type}}"
+      become: yes
+      notify: 
+        - Iptables save
+  
+  - name: Autoload module on start
+    template:
+      src: "module_template.j2"
+      dest: "/etc/modules-load.d/{{module_name_var}}.conf"
+    loop_control:
+      loop_var: module_name_var
+    loop:
+      - ipt_NETFLOW
+  

@@ -2,4 +2,4 @@
   collector_ip: 10.1.0.145
   collector_port: 9996
   protocol_version: 9
-  traffic_type: [INPUT,OUTPUT]
+  traffic_type: [INPUT,OUTPUT,FORWARD]

@@ -7,3 +7,4 @@
   netflow_selinux_state: disabled
   netflow_with_snmp: yes
   netflow_trafic_type: "{{traffic_type}}"
+  netflow_run_tasks: install
