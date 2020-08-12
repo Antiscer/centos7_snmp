@@ -3,6 +3,6 @@
   gather_facts: yes
   tags: install 
   roles:
-    - kernel-source
+    - { role: kernel-source, become: yes}
     - snmp
     - netflow

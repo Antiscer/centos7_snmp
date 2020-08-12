@@ -3,8 +3,8 @@
   netflow_collector_ip: "{{collector_ip}}"
   netflow_collector_port: "{{collector_port}}"
   netflow_protocol_version: "{{protocol_version}}"
-  netflow_natevents_enable: "1"
+  netflow_natevents_enable: "{{natevents_enable}}"
   netflow_selinux_state: disabled
-  netflow_with_snmp: yes
+  netflow_with_snmp: "{{with_snmp}}"
   netflow_trafic_type: "{{traffic_type}}"
   netflow_run_tasks: install

@@ -16,6 +16,7 @@
   - name: Install SNMP package
     yum:
       name: net-snmp,net-snmp-utils
+    become: yes
   - name: Rename original config
     block:
       - name: Copy snmp.conf file
@@ -27,12 +28,15 @@
         file:
           name: /etc/snmp/snmpd.conf
           state: absent
+    become: yes
   - name: Create snmpd.conf file
     template:
       src: snmpd.j2
       dest: /etc/snmp/snmpd.conf
+    become: yes
   - name: Enable and start snmpd daemon
     systemd:
       name: snmpd
       state: started
       enabled: true
+    become: yes

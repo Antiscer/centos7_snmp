@@ -1,4 +1,5 @@
 ---
+  
   - name: Verify that variables
     assert:
       that: kernel_item_var is defined and kernel_item_var | length>0 and kernel_item_var != None
@@ -12,9 +13,13 @@
   - name: Add old repo centos packages
     copy:
       src: old.repo
-      dest: /etc/yum.repos.d/
+      dest: /etc/yum.repos.d/    
+    become: yes
+    become_method: sudo
 
   - name: Install kernel-devel 
     yum:
       name: "kernel-devel-{{kernel_source_version}}"
       state: present
+    become: yes
+    become_method: sudo

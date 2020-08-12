@@ -4,9 +4,21 @@ baseurl=http://vault.centos.org/7.0.1406/os/x86_64/
 enabled=0
 gpgcheck=0
 
+[Vault_Centos_7.0.1406_updates]
+name=My extras packages for CentOS 7.0.1406
+baseurl=http://vault.centos.org/7.0.1406/updates/x86_64/
+enabled=0
+gpgcheck=0
+
 [Vault_Centos_7.1.1503]
 name=My extras packages for CentOS 7.1.1503
 baseurl=http://vault.centos.org/7.1.1503/os/x86_64/
+enabled=0
+gpgcheck=0
+
+[Vault_Centos_7.1.1503_updates]
+name=My extras packages for CentOS 7.1.1503
+baseurl=http://vault.centos.org/7.1.1503/updates/x86_64/
 enabled=0
 gpgcheck=0
 
@@ -16,9 +28,21 @@ baseurl=http://vault.centos.org/7.2.1511/os/x86_64/
 enabled=1
 gpgcheck=0
 
+[Vault_Centos_7.2.1511_updates]
+name=My extras packages for CentOS 7.2.1511
+baseurl=http://vault.centos.org/7.2.1511/updates/x86_64/
+enabled=1
+gpgcheck=0
+
 [Vault_Centos_7.3.1611]
 name=My extras packages for CentOS 7.3.1611
 baseurl=http://vault.centos.org/7.3.1611/os/x86_64/
+enabled=1
+gpgcheck=0
+
+[Vault_Centos_7.3.1611_updates]
+name=My extras packages for CentOS 7.3.1611
+baseurl=http://vault.centos.org/7.3.1611/updates/x86_64/
 enabled=1
 gpgcheck=0
 
@@ -28,12 +52,23 @@ baseurl=http://vault.centos.org/7.4.1708/os/x86_64/
 enabled=1
 gpgcheck=0
 
+[Vault_Centos_7.4.1708_updates]
+name=My extras packages for CentOS 7.4.1708
+baseurl=http://vault.centos.org/7.4.1708/updates/x86_64/
+enabled=1
+gpgcheck=0
+
 [Vault_Centos_7.5.1804]
 name=My extras packages for CentOS 7.5.1804
 baseurl=http://vault.centos.org/7.5.1804/os/x86_64/
 enabled=1
 gpgcheck=0
 
+[Vault_Centos_7.5.1804_updates]
+name=My extras packages for CentOS 7.5.1804
+baseurl=http://vault.centos.org/7.5.1804/updates/x86_64/
+enabled=1
+gpgcheck=0
 
 [Vault_Centos_7.6.1810]
 name=My extras packages for CentOS 7.6.1810
@@ -41,8 +76,20 @@ baseurl=http://vault.centos.org/7.6.1810/os/x86_64/
 enabled=1
 gpgcheck=0
 
+[Vault_Centos_7.6.1810_updates]
+name=My extras packages for CentOS 7.6.1810
+baseurl=http://vault.centos.org/7.6.1810/updates/x86_64/
+enabled=1
+gpgcheck=0
+
 [Vault_Centos_7.7.1908]
 name=My extras packages for CentOS 7.7.1908
 baseurl=http://vault.centos.org/7.7.1908/os/x86_64/
+enabled=1
+gpgcheck=0
+
+[Vault_Centos_7.7.1908_updates]
+name=My extras packages for CentOS 7.7.1908
+baseurl=http://vault.centos.org/7.7.1908/updates/x86_64/
 enabled=1
 gpgcheck=0

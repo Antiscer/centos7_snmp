@@ -1,5 +1,11 @@
 --- 
+# Netflow collector ip address, port and protocol version
   collector_ip: 10.1.0.145
   collector_port: 9996
   protocol_version: 9
+# interesting traffic send
   traffic_type: [INPUT,OUTPUT,FORWARD]
+# activate snmp integration
+  with_snmp: yes
+  ipt_netflow_dir: ~/ipt-netflow
+  natevents_enable: "1"

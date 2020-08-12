@@ -19,12 +19,14 @@
   - name: Disable selinux
     selinux:
       state: disabled
+    become: yes
   - name: Disable firewalld
     systemd:
       name: firewalld
       masked: yes
       state: stopped
       enabled: false
+    become: yes
   - name: Add SNMP support
     block:
     - name: Install snmp-devel packet
@@ -43,6 +45,7 @@
         name: snmpd
         state: restarted
     when: netflow_with_snmp | bool
+    become: yes
 
   - name: Install necessary package
     yum:
@@ -57,11 +60,13 @@
       - iptables-services
       - pkgconfig
       - gcc
+    become: yes
 
   - name: Get ipt_netflow from github
     git:
       repo: git://github.com/aabc/ipt-netflow.git
       dest: "{{ipt_netflow_dir}}"
+    become: yes
   
   - name: Configure and install ipt-netflow
     block:
@@ -77,12 +82,13 @@
         shell: 
           cmd: depmod
           chdir: "{{ipt_netflow_dir}}"      
-  
+    become: yes
   - name: Add collector to config
     template:
       src: netflow.j2
       dest: /etc/modprobe.d/netflow.conf
     register: netflow_conf
+    become: yes
 
   - name: Remove modules
     block:
@@ -102,17 +108,20 @@
         name: ipt_NETFLOW
         state: absent
     when: netflow_conf is changed
+    become: yes
 
   - name: Load ipt-netflow module
     modprobe:
       name: ipt_NETFLOW
       state: present 
+    become: yes
   
   - name: Start iptables-service
     systemd:
       name: iptables
       state: started
       enabled: yes 
+    become: yes
   
   - name: Refresh rule for iptables
     block:
@@ -140,6 +149,7 @@
       become: yes
       notify: 
         - Iptables save
+    become: yes
   
   - name: Autoload module on start
     template:
@@ -149,4 +159,5 @@
       loop_var: module_name_var
     loop:
       - ipt_NETFLOW
+    become: yes
   
