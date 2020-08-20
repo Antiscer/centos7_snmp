@@ -1,5 +1,8 @@
 ---
 # Get selected task, default value is "install"
+  - name: Msg
+    debug:
+      msg: "{{traffic_type}}"
   - include: "{{netflow_run_tasks}}.yml"
 
 
